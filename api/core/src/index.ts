@@ -5,24 +5,21 @@ import { PromiseResolver } from '@h4ad/serverless-adapter/lib/resolvers/promise'
 import { ApiGatewayV2Adapter } from '@h4ad/serverless-adapter/lib/adapters/aws';
 import fastify from 'fastify';
 
-
 const app = fastify();
 
 app.get('/', async (request, reply) => {
     return { Hello: "World" };
 })
 
-let defaultHandler = null;
+let defaultHandler: any = app.listen({ port: 3000 }, (err, address) => {
+    if (err) {
+        console.error(err)
+        process.exit(1)
+    }
+    console.log(`Server listening at ${address}`)
+})
 
-if (require.main === module) {
-    defaultHandler = app.listen({ port: 3000 }, (err, address) => {
-        if (err) {
-            console.error(err)
-            process.exit(1)
-        }
-        console.log(`Server listening at ${address}`)
-    })
-} else {
+if (require.main !== module) {
     defaultHandler = ServerlessAdapter.new(app)
         .setFramework(new FastifyFramework())
         .setHandler(new DefaultHandler())
@@ -31,4 +28,4 @@ if (require.main === module) {
         .build();
 }
 
-export const hander = defaultHandler;
+export const handler = defaultHandler;
