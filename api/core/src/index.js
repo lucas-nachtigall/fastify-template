@@ -1,4 +1,5 @@
 const fastify = require('fastify');
+const awsLambdaFastify = require('@fastify/aws-lambda')
 
 function init() {
   const app = fastify();
@@ -14,5 +15,6 @@ if (require.main === module) {
   });
 } else {
   // required as a module => executed on aws lambda
-  module.exports = init;
+  const proxy = awsLambdaFastify(init())
+  module.exports = proxy;
 }
