@@ -1,24 +1,34 @@
-import fastify from 'fastify'
+import { ServerlessAdapter } from '@h4ad/serverless-adapter';
+import { FastifyFramework } from '@h4ad/serverless-adapter/lib/frameworks/fastify';
+import { DefaultHandler } from '@h4ad/serverless-adapter/lib/handlers/default';
+import { PromiseResolver } from '@h4ad/serverless-adapter/lib/resolvers/promise';
+import { ApiGatewayV2Adapter } from '@h4ad/serverless-adapter/lib/adapters/aws';
+import fastify from 'fastify';
 
 
-function server() {
-    const app = fastify();
+const app = fastify();
 
-    app.get('/', async (request, reply) => {
-        return { Hello: "World" };
-    })
-    return app;
-}
+app.get('/', async (request, reply) => {
+    return { Hello: "World" };
+})
+
+let defaultHandler = null;
 
 if (require.main === module) {
-    server().listen({ port: 3000 }, (err, address) => {
+    defaultHandler = app.listen({ port: 3000 }, (err, address) => {
         if (err) {
             console.error(err)
             process.exit(1)
         }
         console.log(`Server listening at ${address}`)
     })
+} else {
+    defaultHandler = ServerlessAdapter.new(app)
+        .setFramework(new FastifyFramework())
+        .setHandler(new DefaultHandler())
+        .setResolver(new PromiseResolver())
+        .addAdapter(new ApiGatewayV2Adapter())
+        .build();
 }
-else {
-    module.exports = server;
-}
+
+export const hander = defaultHandler;
