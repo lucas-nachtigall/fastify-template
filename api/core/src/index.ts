@@ -1,15 +1,24 @@
 import fastify from 'fastify'
 
-const server = fastify()
 
-server.get('/ping', async (request, reply) => {
-    return 'pong\n';
-})
+function server() {
+    const app = fastify();
 
-server.listen({ port: 3000 }, (err, address) => {
-    if (err) {
-        console.error(err)
-        process.exit(1)
-    }
-    console.log(`Server listening at ${address}`)
-})
+    app.get('/', async (request, reply) => {
+        return { Hello: "World" };
+    })
+    return app;
+}
+
+if (require.main === module) {
+    server().listen({ port: 3000 }, (err, address) => {
+        if (err) {
+            console.error(err)
+            process.exit(1)
+        }
+        console.log(`Server listening at ${address}`)
+    })
+}
+else {
+    module.exports = server;
+}
