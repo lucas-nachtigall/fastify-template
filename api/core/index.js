@@ -1,1 +1,1 @@
-exports.handler = require('./dist/index.js');
+export const handler = require('./dist/index.js');
