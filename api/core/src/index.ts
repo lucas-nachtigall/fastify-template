@@ -3,7 +3,10 @@ import { FastifyFramework } from '@h4ad/serverless-adapter/lib/frameworks/fastif
 import { DefaultHandler } from '@h4ad/serverless-adapter/lib/handlers/default';
 import { PromiseResolver } from '@h4ad/serverless-adapter/lib/resolvers/promise';
 import { ApiGatewayV2Adapter } from '@h4ad/serverless-adapter/lib/adapters/aws';
-import app from './server';
+//import app from './server';
+const Fastify = require('fastify');
+
+const app = Fastify({ logger: true });
 
 export const handler = ServerlessAdapter.new(app)
     .setFramework(new FastifyFramework())
