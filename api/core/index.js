@@ -1,18 +1,7 @@
-//module.exports = require('./src/index.js');
+//Only runs on AWS
 
-const fastify = require('fastify');
+const awsLambdaFastify = require('@fastify/aws-lambda')
+const app = require('./index')
 
-function init() {
-  const app = fastify();
-  app.get('/', (request, reply) => reply.send({ hello: 'world' }));
-  return app;
-}
-
-if (require.main === module) {
-  init().listen({ port: 3000 }, (err) => {
-    if (err) console.error(err);
-    console.log('server listening on http://localhost:3000');
-  });
-} else {
-  module.exports = init
-}
+const proxy = awsLambdaFastify(app)
+exports.handler = proxy
