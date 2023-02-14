@@ -12,5 +12,5 @@ if (require.main === module) {
     console.log('server listening on http://localhost:3000');
   });
 } else {
-  module.exports = app
+  module.exports = init
 }
